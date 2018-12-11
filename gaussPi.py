@@ -2,7 +2,7 @@
 """
 ==============================
 Chapman, Piers - 05NOV18
-Purpose: Calculate pi using the trapezoidal rule
+Purpose: Calculate pi using the 2-point gauss rule
 ==============================
 """
 from math import *
@@ -12,17 +12,19 @@ import stopwatch as watch
 def f(x):
 	return 4/(1+x**2)
 
-def trapezoidal(f,a,b,n):
+def gauss(f,a,b,n):
 	h = (b-a)/n
-	trap_sum = f(a) + f(b)
-	for i in range (1,n-1):
+	fi = 0.0
+	xi = 0.0
+	pxi = 0.0
+	for i in range (1,n):
 		xi = a + i*h
-		fi = f(xi)
-		trap_sum += 2*fi 
-	return (h/2)*trap_sum
+		x2 = (0.5)*(xi+pxi+(h/sqrt(3)))
+		x1 = (0.5)*(xi+pxi-(h/sqrt(3)))
+		fi += f(x1)+f(x2)
+		pxi = xi
+	return h*0.5*fi
 
-#a = float(input('Lower Bound a:'))
-#b = float(input('Upper Bound b:'))
 a = 0
 b = 1
 m = int(input('Please enter m, where i = 2^m:'))
@@ -31,7 +33,7 @@ I = pi
 
 for i in range(5,m+1):
 	start = clock.time()
-	T = trapezoidal(f,a,b,2**i)
+	T = gauss(f,a,b,2**i)
 	end = clock.time()
 	error = abs((T-I)/I)
 	timeLen = end-start
